@@ -193,7 +193,7 @@ def run_bot():
 
     application.job_queue.run_repeating(check_prices, interval=CHECK_INTERVAL_MIN * 60, first=30)
 
-   application.run_polling(stop_signals=None)
+    application.run_polling(stop_signals=None)
 
 def main():
     threading.Thread(target=run_bot, daemon=True).start()
