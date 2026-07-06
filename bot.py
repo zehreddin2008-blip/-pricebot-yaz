@@ -180,12 +180,10 @@ flask_app = Flask(__name__)
 def health():
     return "Fiyat takip botu çalışıyor."
 
-def run_flask():
-    port = int(os.environ.get("PORT", "10000"))
-    flask_app.run(host="0.0.0.0", port=port)
-
-def main():
-    threading.Thread(target=run_flask, daemon=True).start()
+def run_bot():
+    import asyncio
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
 
     application = Application.builder().token(TOKEN).build()
     application.add_handler(CommandHandler("start", start))
@@ -196,6 +194,11 @@ def main():
     application.job_queue.run_repeating(check_prices, interval=CHECK_INTERVAL_MIN * 60, first=30)
 
     application.run_polling()
+
+def main():
+    threading.Thread(target=run_bot, daemon=True).start()
+    port = int(os.environ.get("PORT", "10000"))
+    flask_app.run(host="0.0.0.0", port=port)
 
 if __name__ == "__main__":
     main()
